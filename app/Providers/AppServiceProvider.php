@@ -17,7 +17,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // 
+        $this->app->bind(UploadServiceInterface::class, LocalUploadService::class);
     }
 
     /**
