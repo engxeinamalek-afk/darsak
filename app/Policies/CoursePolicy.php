@@ -10,4 +10,9 @@ class CoursePolicy
     {
         return $user->id === $course->instructor_id;
     }
+
+    public function access(User $user, Course $course): bool
+    {
+        return $user->enrolledCourses()->wherePivot('course_id', $course->id)->exists();
+    }
 }

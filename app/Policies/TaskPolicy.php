@@ -11,4 +11,10 @@ class TaskPolicy
         return $task->course
             && $user->id === $task->course->instructor_id;
     }
+
+    public function access(User $user, Task $task): bool
+    {
+        $courseId= $task->course()->value('courses.id');
+        return $user->enrolledCourses()->wherePivot('course_id',$courseId)->exists();
+    }
 }
