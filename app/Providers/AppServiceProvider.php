@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Enums\CommentableType;
 use App\Enums\ImageableType;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -10,6 +11,8 @@ use App\Services\ImagesUpload\LocalUploadService;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use App\Enums\TaggableType;
+use App\Models\Course;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -58,5 +61,20 @@ class AppServiceProvider extends ServiceProvider
             $modelClass = Relation::getMorphedModel($imageableType->value);
             return $modelClass::findOrFail($value);
         });
+
+        Route::bind('commentable', function ($value, $route) {
+            $typeString = $route->parameter('commentable_type');
+            
+            $commentableType = CommentableType::tryFrom($typeString);
+            
+            if (! $commentableType) {
+                abort(422, "This resource cannot be commented.");
+            }
+
+            $modelClass = Relation::getMorphedModel($commentableType->value);
+            
+            return $modelClass::findOrFail($value);
+        });
+
     }
 }
