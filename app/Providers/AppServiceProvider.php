@@ -12,7 +12,8 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use App\Enums\TaggableType;
 use App\Models\Course;
-
+use App\Models\Scopes\PublishedCoursesScope;
+use App\Routing\PolymorphicBinder;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -34,47 +35,29 @@ class AppServiceProvider extends ServiceProvider
             'instructor' => \App\Models\User::class, 
             'task' => \App\Models\Task::class
         ]);
-        Route::bind('taggable', function ($value, $route) {
-            $typeString = $route->parameter('taggable_type');
-            
-            $taggableType = TaggableType::tryFrom($typeString);
-            
-            if (! $taggableType) {
-                abort(422, "This resource cannot be tagged.");
-            }
 
-            $modelClass = Relation::getMorphedModel($taggableType->value);
-            
-            return $modelClass::findOrFail($value);
+        Route::bind('taggable', PolymorphicBinder::bind(
+            paramName: 'taggable', 
+            enumClass: TaggableType::class, 
+            allowedTypes: [], 
+            withoutGlobalScopes: ['course' => [PublishedCoursesScope::class]] 
+        ));
+
+        Route::bind('imageable', PolymorphicBinder::bind(
+            paramName: 'imageable', 
+            enumClass: ImageableType::class, 
+            allowedTypes: [ImageableType::COURSE, ImageableType::LESSON], 
+            withoutGlobalScopes: ['course' => [PublishedCoursesScope::class]]
+        ));
+
+        Route::bind('commentable', PolymorphicBinder::bind(
+            paramName: 'commentable', 
+            enumClass: CommentableType::class
+        ));
+
+        Route::bind('instructor_course', function ($value) {
+            return Course::withoutGlobalScope(PublishedCoursesScope::class)
+                ->findOrFail($value);
         });
-
-        Route::bind('imageable', function ($value, $route) {
-            $typeString = $route->parameter('imageable_type');
-            $imageableType = ImageableType::tryFrom($typeString);
-            
-            $allowedTypes = [ImageableType::COURSE, ImageableType::LESSON];
-
-            if (! $imageableType || ! in_array($imageableType, $allowedTypes, true)) {
-                abort(422, "This resource cannot have dynamic images.");
-            }
-
-            $modelClass = Relation::getMorphedModel($imageableType->value);
-            return $modelClass::findOrFail($value);
-        });
-
-        Route::bind('commentable', function ($value, $route) {
-            $typeString = $route->parameter('commentable_type');
-            
-            $commentableType = CommentableType::tryFrom($typeString);
-            
-            if (! $commentableType) {
-                abort(422, "This resource cannot be commented.");
-            }
-
-            $modelClass = Relation::getMorphedModel($commentableType->value);
-            
-            return $modelClass::findOrFail($value);
-        });
-
     }
 }
