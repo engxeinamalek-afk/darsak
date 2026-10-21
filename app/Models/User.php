@@ -11,6 +11,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Enums\UserRoles;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
@@ -54,5 +55,9 @@ class User extends Authenticatable
             'password' => 'hashed',
             'role' => UserRoles::class, 
         ];
+    }
+
+    public function enrolledCourses(): BelongsToMany{
+        return $this->belongsToMany(Course::class, 'course_user', 'student_id', 'course_id');
     }
 }
