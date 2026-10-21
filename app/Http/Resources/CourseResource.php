@@ -20,13 +20,15 @@ class CourseResource extends JsonResource
             'id'   => $this->id,
             'name' => $this->name,
             
-            $this->mergeWhen($user && $user->role === UserRoles::INSTRUCTOR, [
-                'status' => $this->status
-            ]),
+            'status'=> $this->when(
+                $user && $user->role === UserRoles::INSTRUCTOR,
+                $this->status
+            ),
 
-            $this->mergeWhen($user && $user->role === UserRoles::STUDENT, [
-                'status' => $this->status
-            ]),
+            'instructor_id' => $this->when(
+                $user && $user->role === UserRoles::STUDENT, 
+                $this->instructor_id
+            ),
             'lessons' => LessonResource::collection($this->whenLoaded('lessons'))
         ];
     }
