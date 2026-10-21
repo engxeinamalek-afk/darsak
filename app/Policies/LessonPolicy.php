@@ -4,11 +4,16 @@ namespace App\Policies;
 
 use App\Models\User;
 use App\Models\Lesson;
+use App\Models\Scopes\PublishedCoursesScope;
+
 class LessonPolicy
 {
     public function manage(User $user, Lesson $lesson): bool
     {
-        return $lesson->course && $user->id === $lesson->course->instructor_id;
+        $course= $lesson->course()
+                ->withoutGlobalScope(PublishedCoursesScope::class)->first();
+        return $course
+            && $user->id === $course->instructor_id;
     }
 
     public function access(User $user, Lesson $lesson): bool
