@@ -23,7 +23,7 @@ class UpdateCourseRequest extends FormRequest
      */
     public function authorize(): bool
     { 
-        $course = $this->route('course');
+        $course = $this->route('instructor_course');
 
         return Gate::allows('manage', $course);
     }
