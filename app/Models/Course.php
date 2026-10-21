@@ -30,7 +30,7 @@ class Course extends Model
     }
     public function scopeWithDetails(Builder $query)
     {
-        return $query->select(['id', 'name', 'status', 'instructor_id'])
+        return $query->select(['courses.id', 'name', 'status', 'instructor_id'])
             ->with([
                 'lessons' => function ($q) {
                     $q->select(['id', 'course_id', 'name', 'url'])
