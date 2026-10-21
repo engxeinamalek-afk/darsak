@@ -9,14 +9,6 @@ use App\Traits\MapsArabicFields;
 use Illuminate\Support\Facades\Gate;
 class StoreLessonRequest extends FormRequest
 {
-    use MapsArabicFields;
-    public function fieldsMapping(): array
-    {
-        return [
-            'الاسم' => 'name',
-            'الرابط' => 'url'
-        ];
-    }
     /**
      * Determine if the user is authorized to make this request.
      */

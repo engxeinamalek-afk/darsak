@@ -11,13 +11,6 @@ use Illuminate\Support\Facades\Gate;
 use App\Traits\MapsArabicFields;
 class UpdateCourseRequest extends FormRequest
 {
-    use MapsArabicFields;
-    public function fieldsMapping(): array
-    {
-        return [
-            'الحالة' => 'status',
-        ];
-    }
     /**
      * Determine if the user is authorized to make this request.
      */

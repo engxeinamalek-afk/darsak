@@ -8,13 +8,6 @@ use Illuminate\Support\Facades\Gate;
 use App\Traits\MapsArabicFields;
 class StoreCommentRequest extends FormRequest
 {
-    use MapsArabicFields;
-    public function fieldsMapping(): array
-    {
-        return [
-            'التعليق' => 'body',
-        ];
-    }
     /**
      * Determine if the user is authorized to make this request.
      */

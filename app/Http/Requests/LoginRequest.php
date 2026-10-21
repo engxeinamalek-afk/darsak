@@ -7,14 +7,6 @@ use Illuminate\Foundation\Http\FormRequest;
 use App\Traits\MapsArabicFields;
 class LoginRequest extends FormRequest
 {
-    use MapsArabicFields;
-    public function fieldsMapping(): array
-    {
-        return [
-            'البريد الالكتروني' => 'email',
-            'كلمة المرور' => "password"
-        ];
-    }
     /**
      * Determine if the user is authorized to make this request.
      */

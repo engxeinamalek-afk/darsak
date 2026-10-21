@@ -7,13 +7,6 @@ use Illuminate\Foundation\Http\FormRequest;
 use App\Traits\MapsArabicFields;
 class StoreTagRequest extends FormRequest
 {
-    use MapsArabicFields;
-    public function fieldsMapping(): array
-    {
-        return [
-            'الاسم' => 'name',
-        ];
-    }
     /**
      * Determine if the user is authorized to make this request.
      */

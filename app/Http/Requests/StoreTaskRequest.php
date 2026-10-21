@@ -8,14 +8,6 @@ use Illuminate\Support\Facades\Gate;
 use App\Traits\MapsArabicFields;
 class StoreTaskRequest extends FormRequest
 {    
-    use MapsArabicFields;
-    public function fieldsMapping(): array
-    {
-        return [
-            'الاسم' => 'name',
-            'نص التاسك' => 'body'
-        ];
-    }
     /**
      * Determine if the user is authorized to make this request.
      */

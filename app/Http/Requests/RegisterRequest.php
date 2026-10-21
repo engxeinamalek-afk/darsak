@@ -10,16 +10,6 @@ use App\Traits\MapsArabicFields;
 use Illuminate\Validation\Rule;
 class RegisterRequest extends FormRequest
 {
-    use MapsArabicFields;
-    public function fieldsMapping(): array
-    {
-        return [
-            'الاسم' => 'name',
-            'البريد الالكتروني' => 'email',
-            'كلمة المرور' => "password",
-            'الدور' => 'role'
-        ];
-    }
     /**
      * Determine if the user is authorized to make this request.
      */

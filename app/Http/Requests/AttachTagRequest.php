@@ -10,13 +10,6 @@ use Illuminate\Support\Facades\Gate;
 
 class AttachTagRequest extends FormRequest
 {
-    use MapsArabicFields;
-    public function fieldsMapping(): array
-    {
-        return [
-            'الوسوم' => 'tags',
-        ];
-    }
     /**
      * Determine if the user is authorized to make this request.
      */

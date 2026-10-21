@@ -9,13 +9,6 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Gate;
 class StoreImageRequest extends FormRequest
 {
-    use MapsArabicFields;
-    public function fieldsMapping(): array
-    {
-        return [
-            'الصورة' => 'image',
-        ];
-    }
     /**
      * Determine if the user is authorized to make this request.
      */
