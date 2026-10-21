@@ -8,6 +8,7 @@ use App\Http\Requests\StoreImageRequest;
 use App\Http\Requests\StoreLessonController;
 use App\Http\Requests\StoreLessonController as RequestsStoreLessonController;
 use App\Http\Requests\StoreLessonRequest;
+use App\Http\Resources\LessonResource;
 use App\Models\Course;
 use App\Models\Lesson;
 use App\Models\Tag;
@@ -24,5 +25,22 @@ class LessonController extends Controller
             'course_id' => $course->id
         ]);
         return \response()->json([$lesson]);
+    }
+
+    public function index(Course $course){
+        Gate::authorize('manage', $course);
+        $lessons= $course->lessons()
+                    ->withDetails()
+                    ->paginate(10);
+
+        return response()->json([
+            'courses'    => LessonResource::collection($lessons),
+            'pagination' => [
+                'current_page' => $lessons->currentPage(),
+                'next_page'    => $lessons->nextPageUrl(),
+                'prev_page'    => $lessons->previousPageUrl(),
+                'total_pages'  => $lessons->lastPage(),
+            ]
+        ]);
     }
 }
