@@ -25,5 +25,17 @@ class Course extends Model
             'status' => CourseStatus::class
         ];
     }
-
+    public function lessons():HasMany{
+        return $this->hasMany(Lesson::class);
+    }
+    public function scopeWithDetails(Builder $query)
+    {
+        return $query->select(['id', 'name', 'status', 'instructor_id'])
+            ->with([
+                'lessons' => function ($q) {
+                    $q->select(['id', 'course_id', 'name', 'url'])
+                    ->with(['task:id,lesson_id,name,body']);
+                }
+            ]);
+    }
 }

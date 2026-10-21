@@ -5,13 +5,13 @@ namespace App\Http\Controllers\Api\instructor;
 use App\Enums\CourseStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCourseRequest;
-use App\Http\Requests\StoreImageRequest;
 use App\Http\Requests\UpdateCourseRequest;
-use App\Services\ImagesUpload\UploadServiceInterface;
+use App\Http\Resources\CourseResource;
 use Illuminate\Http\Request;
 use App\Models\Course;
-use App\Models\Tag;
-use Illuminate\Support\Facades\Gate;
+use App\Models\Scopes\PublishedCoursesScope;
+use Illuminate\Support\Facades\Auth;
+
 class CourseController extends Controller
 {
     public function store(StoreCourseRequest $request){
@@ -39,4 +39,22 @@ class CourseController extends Controller
         return response()->json(['message' => 'لم يتم إدخال قيمة جديدة، الحالة مطابقة للحالية.']);
 
     }
+
+    public function index(){
+        $user= auth()->user();
+        $courses= $user->courses()
+                    ->withoutGlobalScope(PublishedCoursesScope::class)
+                    ->withDetails()
+                    ->paginate(10);
+        return response()->json([
+            'courses'    => CourseResource::collection($courses),
+            'pagination' => [
+                'current_page' => $courses->currentPage(),
+                'next_page'    => $courses->nextPageUrl(),
+                'prev_page'    => $courses->previousPageUrl(),
+                'total_pages'  => $courses->lastPage(),
+            ]
+        ]);
+    }
+
 }

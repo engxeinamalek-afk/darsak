@@ -12,6 +12,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Enums\UserRoles;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
@@ -59,5 +60,9 @@ class User extends Authenticatable
 
     public function enrolledCourses(): BelongsToMany{
         return $this->belongsToMany(Course::class, 'course_user', 'student_id', 'course_id');
+    }
+
+    public function courses(): HasMany{
+        return $this->hasMany(Course::class,'instructor_id');
     }
 }
