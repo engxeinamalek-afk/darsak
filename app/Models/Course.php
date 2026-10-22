@@ -9,6 +9,7 @@ use App\Models\Concerns\HasTags;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Scopes\PublishedCoursesScope;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Course extends Model
@@ -37,5 +38,9 @@ class Course extends Model
                     ->with(['task:id,lesson_id,name,body']);
                 }
             ]);
+    }
+
+    public function students(): BelongsToMany{
+        return $this->belongsToMany(User::class, 'course_user', 'course_id', 'student_id');
     }
 }

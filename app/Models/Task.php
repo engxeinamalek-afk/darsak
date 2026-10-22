@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Concerns\HasComments;
 use App\Models\Concerns\HasTags;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 class Task extends Model
 {
@@ -21,5 +22,8 @@ class Task extends Model
             'lesson_id',   
             'course_id'   
         );
+    }
+    public function lesson():BelongsTo{
+        return $this->belongsTo(Lesson::class);
     }
 }
