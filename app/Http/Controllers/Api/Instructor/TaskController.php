@@ -17,11 +17,13 @@ class TaskController extends Controller
     public function store(StoreTaskRequest $request, Lesson $lesson){
 
         $data= $request->validated();
-        $task= Task::create([
-            'lesson_id' => $lesson->id,
-            'name'      => $data['name'],
-            'body'      => $data['body'],
-        ]);
+        $task = Task::updateOrCreate(
+            ['lesson_id' => $lesson->id],
+            [
+                'name' => $data['name'],
+                'body' => $data['body'],
+            ]
+        );
         return $this->successResponse(new TaskResource($task), "Task created successfully",201);
         
     }
