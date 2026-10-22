@@ -9,11 +9,13 @@ use App\Models\Concerns\HasTags;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Scopes\PublishedCoursesScope;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Course extends Model
 {
+    use HasFactory;
     use HasComments,HasTags,HasImage;
     protected $fillable = ['name', 'instructor_id', 'status'];
 

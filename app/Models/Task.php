@@ -4,11 +4,13 @@ namespace App\Models;
 
 use App\Models\Concerns\HasComments;
 use App\Models\Concerns\HasTags;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 class Task extends Model
 {
+    use HasFactory;
     use HasComments,HasTags;
     protected $fillable = ['name', 'body', 'lesson_id'];
 
