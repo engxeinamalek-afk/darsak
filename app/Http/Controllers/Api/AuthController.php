@@ -9,10 +9,11 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\RegisterRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\LoginRequest;
+use App\Traits\ApiResponse;
 
 class AuthController extends Controller
 {
-    
+    use ApiResponse;
     public function register(RegisterRequest $request)
     {
         $validatedData = $request->validated();
@@ -25,12 +26,10 @@ class AuthController extends Controller
         ]);
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        return response()->json([
-            'message' => 'User registered successfully',
-            'user'    => $user,
-            'access_token' => $token,
-            'token_type' => 'Bearer',
-        ], 201);
+        return $this->successResponse(data:['user'    => $user,
+                                        'access_token' => $token,
+                                        'token_type' => 'Bearer',],
+                                        message:'User registered successfully', statusCode:201);
     }
 
     public function login(LoginRequest $request)
@@ -44,19 +43,15 @@ class AuthController extends Controller
         $user = $request->user();
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        return response()->json([
-            'message' => 'User logged in successfully',
-            'access_token' => $token,
-            'token_type' => 'Bearer',
-        ]);
+        return $this->successResponse(data:['access_token' => $token,
+                                        'token_type' => 'Bearer',],
+                                        message:'User logged in successfully');
     }
 
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
 
-        return response()->json([
-            'message' => 'User logged out successfully'
-        ]);
+        return $this->successResponse(message:'User logged out successfully',statusCode:200);
     }
 }

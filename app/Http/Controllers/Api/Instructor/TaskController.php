@@ -8,10 +8,12 @@ use App\Http\Resources\TaskResource;
 use App\Models\Lesson;
 use Illuminate\Http\Request;
 use App\Models\Task;
+use App\Traits\ApiResponse;
 use Illuminate\Support\Facades\Gate;
 
 class TaskController extends Controller
 {
+    use ApiResponse;
     public function store(StoreTaskRequest $request, Lesson $lesson){
 
         $data= $request->validated();
@@ -20,7 +22,7 @@ class TaskController extends Controller
             'name'      => $data['name'],
             'body'      => $data['body'],
         ]);
-        return response()->json([$task]);
+        return $this->successResponse(new TaskResource($task), "Task created successfully",201);
         
     }
 
@@ -30,6 +32,6 @@ class TaskController extends Controller
                 ->select(['id', 'name', 'body'])
                 ->firstOrFail();
 
-        return new TaskResource($task);
+        return $this->successResponse(new TaskResource($task), "Task retrieved successfully");
     }
 }

@@ -13,9 +13,11 @@ use App\Models\Course;
 use App\Models\Lesson;
 use App\Models\Tag;
 use App\Services\ImagesUpload\UploadServiceInterface;
+use App\Traits\ApiResponse;
 use Illuminate\Support\Facades\Gate;
 class LessonController extends Controller
 {
+    use ApiResponse;
     public function store(StoreLessonRequest $request, Course $course){
         $data= $request->validated();
 
@@ -24,7 +26,8 @@ class LessonController extends Controller
             'url' => $data['url'],
             'course_id' => $course->id
         ]);
-        return \response()->json([$lesson]);
+
+        return $this->successResponse(new LessonResource($lesson), "lesson created successfully");
     }
 
     public function index(Course $course){
@@ -33,14 +36,13 @@ class LessonController extends Controller
                     ->withDetails()
                     ->paginate(10);
 
-        return response()->json([
-            'courses'    => LessonResource::collection($lessons),
-            'pagination' => [
-                'current_page' => $lessons->currentPage(),
-                'next_page'    => $lessons->nextPageUrl(),
-                'prev_page'    => $lessons->previousPageUrl(),
-                'total_pages'  => $lessons->lastPage(),
-            ]
-        ]);
+        return $this->successResponse(data:['lessons'    => LessonResource::collection($lessons),
+                                            'pagination' => [
+                                                'current_page' => $lessons->currentPage(),
+                                                'next_page'    => $lessons->nextPageUrl(),
+                                                'prev_page'    => $lessons->previousPageUrl(),
+                                                'total_pages'  => $lessons->lastPage(),
+                                            ]],
+                                      message:"Lessons retrieved successfully");
     }
 }

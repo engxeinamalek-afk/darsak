@@ -7,17 +7,19 @@ use App\Http\Requests\AttachTagRequest;
 use App\Http\Requests\StoreTagRequest;
 use App\Http\Resources\TagResource;
 use App\Models\Tag;
+use App\Traits\ApiResponse;
 use Illuminate\Database\Eloquent\Model;
 
 class TagController extends Controller
 {
+    use ApiResponse;
     public function attach(AttachTagRequest $request,$taggable_type, Model $taggable)
     {
         $tagsIds = $request->validated()['tags'];
         
         $taggable->tags()->syncWithoutDetaching($tagsIds);
 
-        return response()->json([$tagsIds]);
+        return $this->successResponse($tagsIds, "Tags assigned successfully");
     }
 
     public function store(StoreTagRequest $request){
@@ -25,7 +27,7 @@ class TagController extends Controller
 
         $tag=Tag::create(['name' => $data['name']]);
 
-        return \response()->json([$tag]);
+        return $this->successResponse($tag, "Tag created successfully", 201);
     }
     public function show(Tag $tag){
         $tag->load([
@@ -37,8 +39,7 @@ class TagController extends Controller
             'tasks:id,name,body'   
         ]);
 
-        return new TagResource($tag);
-
+        return $this->successResponse(new TagResource($tag), "Tag retrieved successfully");
     }
 
 }

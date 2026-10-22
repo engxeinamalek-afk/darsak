@@ -10,10 +10,12 @@ use App\Http\Resources\CourseResource;
 use Illuminate\Http\Request;
 use App\Models\Course;
 use App\Models\Scopes\PublishedCoursesScope;
+use App\Traits\ApiResponse;
 use Illuminate\Support\Facades\Auth;
 
 class CourseController extends Controller
 {
+    use ApiResponse;
     public function store(StoreCourseRequest $request){
         $data= $request->validated();
 
@@ -23,7 +25,7 @@ class CourseController extends Controller
             'status' => CourseStatus::DRAFT
         ]);
 
-        return response()->json([$course]);
+        return $this->successResponse(new CourseResource($course), 'Course Created successfully', 201);
     }
 
     public function update(UpdateCourseRequest $request, Course $course){
@@ -33,10 +35,12 @@ class CourseController extends Controller
 
 
         if ($course->wasChanged('status')) {
-            return response()->json(['message' => 'تم تحديث حالة الكورس بنجاح.']);
+            return $this->successResponse(message:"Course status updated successfully.",
+                                            statusCode:200);
         }
 
-        return response()->json(['message' => 'لم يتم إدخال قيمة جديدة، الحالة مطابقة للحالية.']);
+        return $this->successResponse(message: "No new changes provided; status is identical to the current one.", 
+                                        statusCode:200);
 
     }
 
@@ -46,15 +50,15 @@ class CourseController extends Controller
                     ->withoutGlobalScope(PublishedCoursesScope::class)
                     ->withDetails()
                     ->paginate(10);
-        return response()->json([
-            'courses'    => CourseResource::collection($courses),
-            'pagination' => [
-                'current_page' => $courses->currentPage(),
-                'next_page'    => $courses->nextPageUrl(),
-                'prev_page'    => $courses->previousPageUrl(),
-                'total_pages'  => $courses->lastPage(),
-            ]
-        ]);
+
+        return $this->successResponse(data:['courses'=> CourseResource::collection($courses),
+                                            'pagination' => [
+                                                'current_page' => $courses->currentPage(),
+                                                'next_page'    => $courses->nextPageUrl(),
+                                                'prev_page'    => $courses->previousPageUrl(),
+                                                'total_pages'  => $courses->lastPage(),
+                                            ]],
+                                      message: 'Courses retrieved successfully', statusCode:200 );
     }
 
 }

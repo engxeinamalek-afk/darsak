@@ -7,10 +7,11 @@ use App\Http\Requests\GetCommentsRequest;
 use App\Http\Resources\CommentResourse;
 use Illuminate\Http\Request;
 use App\Models\Comment;
-
+use App\Traits\ApiResponse;
 
 class CommentController extends Controller
 {
+    use ApiResponse;
     public function index(GetCommentsRequest $request)
     {
         $limit = $request->validated()['limit'];
@@ -22,8 +23,8 @@ class CommentController extends Controller
                                             ->latest() 
                                             ->limit($limit) 
                                             ->get();
-
-        return CommentResourse::collection($comments);
+        return $this->successResponse(CommentResourse::collection($comments),
+                                     'Comments retrieved successfully');
     }
 
 }
