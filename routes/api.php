@@ -24,7 +24,7 @@ Route::middleware(['auth:sanctum','role:instructor'])->prefix('instructor')->gro
 
     Route::post('/tags/{taggable_type}/{taggable}', [TagController::class, 'attach']);
     Route::post('/tags', [TagController::class, 'store']);
-    Route::get('/taggables/{tag}',[TagController::class, 'show']);
+    Route::get('/tags/{tag}/resources',[TagController::class, 'show']);
 
     Route::post('/images/{imageable_type}/{imageable}', [ImageController::class, 'store']);            
     Route::post('/images', [ProfileController::class, 'storeImage'])->name('instructor.image');   
@@ -35,10 +35,10 @@ Route::middleware(['auth:sanctum','role:instructor'])->prefix('instructor')->gro
 
 
     Route::post('/lessons/{instructor_course}', [LessonController::class, 'store']);
-    Route::get('/lessons/{instructor_course}', [LessonController::class, 'index']);
+    Route::get('/courses/{instructor_course}/lessons', [LessonController::class, 'index']);
 
-    Route::post('/tasks/{lesson}', [TaskController::class, 'store']);
-    Route::get('/tasks/{lesson}', [TaskController::class, 'show']);
+    Route::post('/lessons/{lesson}/tasks', [TaskController::class, 'store']);
+    Route::get('/lessons/{lesson}/tasks', [TaskController::class, 'show']);
 
     Route::get('/commentables' , [InstructorCommentController::class, 'index']);
 
@@ -48,11 +48,11 @@ Route::middleware(['auth:sanctum','role:instructor'])->prefix('instructor')->gro
 Route::middleware(['auth:sanctum','role:student'])->prefix('student')->group(function(){
     Route::post('/comments/{commentable_type}/{commentable}', [CommentController::class, 'store']);
 
-    Route::get('/tasks/{lesson}', [StudentTaskController::class, 'show']);
-    Route::get('/lessons/{instructor_course}', [StudentLessonController::class, 'index']);
+    Route::get('/lessons/{lesson}/tasks', [StudentTaskController::class, 'show']);
+    Route::get('/courses/{course}/lessons', [StudentLessonController::class, 'index']);
     Route::get('/courses',[StudentCourseController::class, 'index']);
 
-    Route::get('/taggables/{tag}',[StudentTagController::class, 'show']);
+    Route::get('/tags/{tag}/resources',[StudentTagController::class, 'show']);
 
 
 
